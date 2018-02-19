@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Body.Controllers
 {
     [Route("api/[controller]")]
-    public class OperationController : Controller
+    public class OperationsController : Controller
     {
         // GET api/values
         [HttpGet]
