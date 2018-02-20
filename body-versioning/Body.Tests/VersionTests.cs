@@ -1,3 +1,4 @@
+using Body.Models;
 using Body.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
@@ -17,20 +18,55 @@ namespace Body.Tests
 
         public VersionTests()
         {
-            // Arrange
             _server = new TestServer(new WebHostBuilder().UseStartup<Startup>());
             _client = _server.CreateClient();
         }
 
         [Fact]
-        public async Task Test1()
+        public async Task BasicGet()
         {
-            // Act
             var response = await _client.GetObject<IEnumerable<string>>("/api/operations");
 
-            // Assert
             Assert.Contains("value1", response);
             Assert.Contains("value2", response);
+        }
+
+        [Fact]
+        public async Task OperationOnV1()
+        {
+            object data = GetV1DataModel();
+
+            var versionedObject = new VersionedObject()
+            {
+                Version = "v1",
+                Data = data
+            };
+
+            var hash = await _client.PostObject<int>("/api/operations", versionedObject);
+
+            Assert.Equal(data.GetHashCode(), hash);
+        }
+
+        private static Models.V1.Project GetV1DataModel()
+        {
+            return new Models.V1.Project()
+            {
+                ProjectId = Guid.NewGuid(),
+                ProjectName = "MyFirstProject",
+                Tasks = new List<Models.V1.TaskItem>()
+                    {
+                        new Models.V1.TaskItem()
+                        {
+                            TaskId = Guid.NewGuid(),
+                            TaskName = "MyFirstTask"
+                        },
+                                                new Models.V1.TaskItem()
+                        {
+                            TaskId = Guid.NewGuid(),
+                            TaskName = "MySecondTask"
+                        }
+                    }
+            };
         }
     }
 }

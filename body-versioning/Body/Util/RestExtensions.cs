@@ -1,7 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,12 +17,24 @@ namespace Body.Util
 
         public static async Task<TData> PostObject<TData>(this HttpClient client, string requestUri, object value)
         {
-            var strContent = JsonConvert.SerializeObject(value);
-            var content = new StringContent(strContent, Encoding.ASCII, "application/json");
-            var response = await client.PostAsync(requestUri, content);
-            response.EnsureSuccessStatusCode();
+            HttpResponseMessage response = await PostContent(client, requestUri, value);
+
             var responseString = await response.Content.ReadAsStringAsync();
             return JsonConvert.DeserializeObject<TData>(responseString);
+        }
+
+        public static async Task PostObject(this HttpClient client, string requestUri, object value)
+        {
+            await PostContent(client, requestUri, value);
+        }
+
+        private static async Task<HttpResponseMessage> PostContent(HttpClient client, string requestUri, object value)
+        {
+            var strContent = JsonConvert.SerializeObject(value);
+            var content = new StringContent(strContent, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(requestUri, content);
+            response.EnsureSuccessStatusCode();
+            return response;
         }
     }
 }

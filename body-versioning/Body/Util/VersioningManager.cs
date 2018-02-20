@@ -10,7 +10,7 @@ namespace Body.Util
     public class VersioningManager
     {
         private static IEnumerable<string> AvailableVersions
-            => new List<string>{"V1", "V2", "V3"};
+            => new List<string>{"V1", "V2", "V3"}; //Use Reflection?
 
         public static object UnpackData(VersionedObject versionedObject)
         {
