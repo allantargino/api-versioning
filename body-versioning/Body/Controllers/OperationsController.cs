@@ -20,12 +20,13 @@ namespace Body.Controllers
 
         // POST api/values
         [HttpPost]
-        public int Post([FromBody]VersionedObject value)
+        public object Post([FromBody]VersionedObject value)
         {
-            var data = VersioningManager.UnpackData(value);
+            var data = VersioningManager.UnpackVersionedData(value);
 
             // Do something
-            return data.GetHashCode();
+
+            return data;
         }
     }
 }

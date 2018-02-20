@@ -34,7 +34,7 @@ namespace Body.Tests
         [Fact]
         public async Task OperationOnV1()
         {
-            object data = GetV1DataModel();
+            Models.V1.Project data = GetV1DataModel();
 
             var versionedObject = new VersionedObject()
             {
@@ -42,9 +42,9 @@ namespace Body.Tests
                 Data = data
             };
 
-            var hash = await _client.PostObject<int>("/api/operations", versionedObject);
+            var dataReturned = await _client.PostObject<Models.V1.Project>("/api/operations", versionedObject);
 
-            Assert.Equal(data.GetHashCode(), hash);
+            Assert.Equal(dataReturned.ProjectId, data.ProjectId);
         }
 
         private static Models.V1.Project GetV1DataModel()

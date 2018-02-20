@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Folder Include="Models\V3\" />
-    <Folder Include="Models\V2\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 
