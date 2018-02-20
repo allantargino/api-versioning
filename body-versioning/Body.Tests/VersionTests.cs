@@ -23,15 +23,6 @@ namespace Body.Tests
         }
 
         [Fact]
-        public async Task BasicGet()
-        {
-            var response = await _client.GetObject<IEnumerable<string>>("/api/operations");
-
-            Assert.Contains("value1", response);
-            Assert.Contains("value2", response);
-        }
-
-        [Fact]
         public async Task OperationOnV1()
         {
             Models.V1.Project data = GetV1DataModel();
@@ -43,6 +34,22 @@ namespace Body.Tests
             };
 
             var dataReturned = await _client.PostObject<Models.V1.Project>("/api/operations", versionedObject);
+
+            Assert.Equal(dataReturned.ProjectId, data.ProjectId);
+        }
+
+        [Fact]
+        public async Task OperationOnV2()
+        {
+            Models.V2.Project data = GetV2DataModel();
+
+            var versionedObject = new VersionedObject()
+            {
+                Version = "v2",
+                Data = data
+            };
+
+            var dataReturned = await _client.PostObject<Models.V2.Project>("/api/operations", versionedObject);
 
             Assert.Equal(dataReturned.ProjectId, data.ProjectId);
         }
@@ -64,6 +71,53 @@ namespace Body.Tests
                         {
                             TaskId = Guid.NewGuid(),
                             TaskName = "MySecondTask"
+                        }
+                    }
+            };
+        }
+
+        private static Models.V2.Project GetV2DataModel()
+        {
+            var random = new Random();
+            return new Models.V2.Project()
+            {
+                ProjectId = random.Next(),
+                ProjectName = "MyFirstProject",
+                ProjectDescription = "MyFirstProjectDescription",
+                Tasks = new List<Models.V2.TaskItem>()
+                    {
+                        new Models.V2.TaskItem()
+                        {
+                            TaskId = random.Next(),
+                            TaskName = "MyFirstTask",
+                            TaskDescription = "MyFirstTaskDescription",
+                            Users = new List<Models.V2.User>()
+                            {
+                                new Models.V2.User()
+                                {
+                                    UserId = random.Next(),
+                                    UserName = "MyUser1"
+                                }
+                            }
+                        },
+                        new Models.V2.TaskItem()
+                        {
+                            TaskId = random.Next(),
+                            TaskName = "MySecondTask",
+                            TaskDescription = "MySecondTaskDescription",
+                            Users = new List<Models.V2.User>()
+                            {
+                                new Models.V2.User()
+                                {
+                                    UserId = random.Next(),
+                                    UserName = "MyUser1"
+                                },
+                                new Models.V2.User()
+                                {
+                                    UserId = random.Next(),
+                                    UserName = "MyUser2"
+                                }
+                            }
                         }
                     }
             };
